@@ -107,6 +107,7 @@
             this.checkBox3.TabIndex = 3;
             this.checkBox3.Text = "Rotación";
             this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
             // textBox1
             // 
@@ -212,6 +213,7 @@
             this.checkBox4.TabIndex = 15;
             this.checkBox4.Text = "Sesgado";
             this.checkBox4.UseVisualStyleBackColor = true;
+            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
             // 
             // textBox7
             // 

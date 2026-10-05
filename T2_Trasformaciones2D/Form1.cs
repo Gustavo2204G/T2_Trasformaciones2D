@@ -13,6 +13,8 @@ namespace T2_Trasformaciones2D
         private Point[] Poligono;
         private Point[] PoligonoEs;
         private Point[] PoligonoTr;
+        private Point[] PoligonoRo;
+        private Point[] PoligonoSe;
         private Graphics g;
         private int cX, cY;
 
@@ -20,7 +22,6 @@ namespace T2_Trasformaciones2D
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            
             Pen pluma = new Pen(Color.Black);
             Font f = new Font("Arial", 10);
             Brush b = new SolidBrush(Color.Black);
@@ -125,6 +126,96 @@ namespace T2_Trasformaciones2D
                 }
             }
             //Termina traslacion
+
+            //inicia rotacion
+            if (checkBox3.Checked)
+            {
+                try
+                {
+                    int x1 = int.Parse(textBox1.Text);
+                    int y1 = int.Parse(textBox4.Text);
+                    int x2 = int.Parse(textBox2.Text);
+                    int y2 = int.Parse(textBox5.Text);
+                    int x3 = int.Parse(textBox3.Text);
+                    int y3 = int.Parse(textBox6.Text);
+                    int angulo = int.Parse(textBox8.Text);
+
+                    double radianes = angulo * Math.PI / 180.0;
+
+                    Point[] PoligonoRo = new Point[]
+                    {
+                        new Point(
+                            (int)(x1 * Math.Cos(radianes) - y1 * Math.Sin(radianes)),
+                            (int)(x1 * Math.Sin(radianes) + y1 * Math.Cos(radianes))
+                            ),
+                        new Point(
+                            (int)(x2 * Math.Cos(radianes) - y2 * Math.Sin(radianes)),
+                            (int)(x2 * Math.Sin(radianes) + y2 * Math.Cos(radianes))
+                            ),
+                        new Point(
+                            (int)(x3 * Math.Cos(radianes) - y3 * Math.Sin(radianes)),
+                            (int)(x3 * Math.Sin(radianes) + y3 * Math.Cos(radianes))
+                            )
+                    };
+
+                    for (int i = 0; i < PoligonoRo.Length; i++)
+                    {
+                        PoligonoRo[i].X = PoligonoRo[i].X * 20 + cX;
+                        PoligonoRo[i].Y = cY - PoligonoRo[i].Y * 20;
+                    }
+
+                    g.DrawPolygon(Pens.Purple, PoligonoRo);
+                }
+                catch (FormatException)
+                {
+                }
+            }
+            //termina rotacion
+
+            //inicia sesgado
+            if (checkBox4.Checked)
+            {
+                try
+                {
+                    int x1 = int.Parse(textBox1.Text);
+                    int y1 = int.Parse(textBox4.Text);
+                    int x2 = int.Parse(textBox2.Text);
+                    int y2 = int.Parse(textBox5.Text);
+                    int x3 = int.Parse(textBox3.Text);
+                    int y3 = int.Parse(textBox6.Text);
+                    int Shx = int.Parse(textBox10.Text);
+                    int Shy = int.Parse(textBox13.Text);
+
+
+                    Point[] PoligonoSe = new Point[]
+                    {
+                        new Point(
+                            x1+(y1 * Shx),
+                            y1+(x1 * Shy)
+                            ),
+                        new Point(
+                            x2+(y2 * Shx),
+                            y2+(x2 * Shy)
+                            ),
+                        new Point(
+                            x3+(y3 * Shx),
+                            y3+(x3 * Shy)
+                            )
+                    };
+
+                    for (int i = 0; i < PoligonoSe.Length; i++)
+                    {
+                        PoligonoSe[i].X = PoligonoSe[i].X * 20 + cX;
+                        PoligonoSe[i].Y = cY - PoligonoSe[i].Y * 20;
+                    }
+
+                    g.DrawPolygon(Pens.Orange, PoligonoSe);
+                }
+                catch (FormatException)
+                {
+                }
+            }
+            //termina sesgado
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -147,6 +238,8 @@ namespace T2_Trasformaciones2D
 
             checkBox1.Checked = false;
             checkBox2.Checked = false;
+            checkBox3.Checked = false;
+            checkBox4.Checked = false;
 
             pictureBox1.Invalidate();
 
@@ -199,14 +292,14 @@ namespace T2_Trasformaciones2D
                     string.IsNullOrWhiteSpace(textBox5.Text) ||
                     string.IsNullOrWhiteSpace(textBox6.Text);
 
-                bool escala =
+                bool traslado =
                     string.IsNullOrWhiteSpace(textBox9.Text) ||
                     string.IsNullOrWhiteSpace(textBox12.Text);
 
-                if (cordenadas || escala)
+                if (cordenadas || traslado)
                 {
                     MessageBox.Show("Por favor, llena las coordenadas del polígono y los valores de traslado antes de marcar esta opción.", "Campos vacíos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    checkBox1.Checked = false;
+                    checkBox2.Checked = false;
                     return;
                 }
 
@@ -214,6 +307,74 @@ namespace T2_Trasformaciones2D
                 {
                     MessageBox.Show("Primero debes hacer clic en 'Dibujar Poligono' antes de aplicarle transformaciones.", "Acción requerida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     checkBox2.Checked = false;
+                    return;
+                }
+            }
+            pictureBox1.Invalidate();
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            //rotacion
+            if (checkBox3.Checked)
+            {
+                bool cordenadas =
+                    string.IsNullOrWhiteSpace(textBox1.Text) ||
+                    string.IsNullOrWhiteSpace(textBox2.Text) ||
+                    string.IsNullOrWhiteSpace(textBox3.Text) ||
+                    string.IsNullOrWhiteSpace(textBox4.Text) ||
+                    string.IsNullOrWhiteSpace(textBox5.Text) ||
+                    string.IsNullOrWhiteSpace(textBox6.Text);
+
+                bool rotacion =
+                    string.IsNullOrWhiteSpace(textBox8.Text);
+
+                if (cordenadas || rotacion)
+                {
+                    MessageBox.Show("Por favor, llena las coordenadas del polígono y el valor de rotación antes de marcar esta opción.", "Campos vacíos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    checkBox3.Checked = false;
+                    return;
+                }
+
+                if (Poligono == null)
+                {
+                    MessageBox.Show("Primero debes hacer clic en 'Dibujar Poligono' antes de aplicarle transformaciones.", "Acción requerida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    checkBox3.Checked = false;
+                    return;
+                }
+            }
+            pictureBox1.Invalidate();
+        }
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            //sesgado
+            if (checkBox3.Checked)
+            {
+                bool cordenadas =
+                    string.IsNullOrWhiteSpace(textBox1.Text) ||
+                    string.IsNullOrWhiteSpace(textBox2.Text) ||
+                    string.IsNullOrWhiteSpace(textBox3.Text) ||
+                    string.IsNullOrWhiteSpace(textBox4.Text) ||
+                    string.IsNullOrWhiteSpace(textBox5.Text) ||
+                    string.IsNullOrWhiteSpace(textBox6.Text);
+
+                bool sesgado =
+                    string.IsNullOrWhiteSpace(textBox10.Text) ||
+                    string.IsNullOrWhiteSpace(textBox13.Text);
+
+
+                if (cordenadas || sesgado)
+                {
+                    MessageBox.Show("Por favor, llena las coordenadas del polígono y los valores de sesgado antes de marcar esta opción.", "Campos vacíos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    checkBox4.Checked = false;
+                    return;
+                }
+
+                if (Poligono == null)
+                {
+                    MessageBox.Show("Primero debes hacer clic en 'Dibujar Poligono' antes de aplicarle transformaciones.", "Acción requerida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    checkBox4.Checked = false;
                     return;
                 }
             }
